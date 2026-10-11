@@ -60,7 +60,7 @@ ln -sfn ~/Developer/video-use ~/.claude/skills/video-use        # Claude Code
 # 2. Install deps
 cd ~/Developer/video-use
 uv sync                         # or: pip install -e .
-brew install ffmpeg             # required
+./setup.sh                      # installs + verifies ffmpeg and Remotion
 brew install yt-dlp             # optional, for downloading online sources
 
 # 3. Add your ElevenLabs API key

@@ -1,0 +1,19 @@
+{
+  "name": "video-use-remotion-template",
+  "private": true,
+  "description": "Remotion template for video-use animation slots. Installed by ../setup.sh; copied into slots by ../helpers/remotion_slot.sh.",
+  "scripts": {
+    "studio": "remotion studio",
+    "render": "remotion render Overlay render.mp4"
+  },
+  "dependencies": {
+    "@remotion/cli": "4.0.534",
+    "react": "19.1.1",
+    "react-dom": "19.1.1",
+    "remotion": "4.0.534"
+  },
+  "devDependencies": {
+    "@types/react": "19.1.12",
+    "typescript": "5.9.2"
+  }
+}

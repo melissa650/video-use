@@ -1,0 +1,4 @@
+node_modules/
+out/
+render.mp4
+.remotion-browser*

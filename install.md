@@ -48,24 +48,21 @@ command -v uv >/dev/null && uv sync || pip install -e .
 
 `pyproject.toml` lists `requests`, `librosa`, `matplotlib`, `pillow`, `numpy`. No console scripts — helpers are invoked directly as `python helpers/<name>.py`.
 
-### 3. Install ffmpeg (+ optional yt-dlp)
+### 3. Install ffmpeg + Remotion (+ optional yt-dlp)
 
-`ffmpeg` and `ffprobe` are hard requirements. `yt-dlp` is only needed if the user wants to pull sources from URLs. Animation engines such as HyperFrames, Remotion, and Manim are installed lazily the first time a project actually needs them.
+Run the setup script. It installs whatever is missing and verifies with real work, not file checks:
 
 ```bash
-# macOS
-command -v ffmpeg >/dev/null || brew install ffmpeg
-command -v yt-dlp >/dev/null || brew install yt-dlp     # optional
-
-# Debian / Ubuntu
-# sudo apt-get update && sudo apt-get install -y ffmpeg
-# pip install yt-dlp
-
-# Arch
-# sudo pacman -S ffmpeg yt-dlp
+~/Developer/video-use/setup.sh
 ```
 
-If `brew` / `apt` / `pacman` requires a sudo prompt, tell the user the exact command and wait. Do not invent a password.
+- **ffmpeg / ffprobe** (hard requirement): installed via brew / apt / dnf / pacman, then checked for the `subtitles`, `ebur128`, `lut3d` filters and a real libx264 encode.
+- **Node.js ≥ 18 + Remotion**: installs the pinned Remotion template in `remotion/`, picks a headless browser (Remotion's own Chrome Headless Shell, or a local Chromium/Playwright build if that download is blocked — saved to `remotion/.remotion-browser`), and does a 30-frame smoke render.
+- `--check` only reports status; `--skip-remotion` / `--skip-ffmpeg` limit the scope. Re-running is safe.
+
+If a package install needs a sudo password, the script stops at that prompt — tell the user the exact command and wait. Do not invent a password.
+
+`yt-dlp` is only needed if the user wants to pull sources from URLs (`brew install yt-dlp` or `pip install yt-dlp`). HyperFrames and Manim are still installed lazily the first time a project needs them.
 
 ### 4. Register the skill with the current agent
 
@@ -132,6 +129,7 @@ Run one real thing. Prefer the lightest verification that still proves the pipel
 ```bash
 python ~/Developer/video-use/helpers/timeline_view.py --help >/dev/null && echo "helpers OK"
 ffprobe -version | head -1
+~/Developer/video-use/setup.sh --check
 ```
 
 Full transcription test is optional at install time — it burns Scribe credits. Better to wait until the user hands you their first clip.
@@ -157,6 +155,6 @@ Tell the user, in one short message:
 - `ffmpeg` from static builds works fine. Any modern (≥ 4.x) build is enough.
 - `yt-dlp` is optional. Don't block install on it; install lazily the first time a user asks to pull from a URL.
 - Node.js/npm are only needed for HyperFrames or Remotion slots. HyperFrames currently requires Node.js 22+.
-- HyperFrames, Remotion, and Manim are optional animation engines. Don't install or prefer one globally during setup; pick the engine per animation slot in `SKILL.md`. HyperFrames can run through `npx --yes hyperframes ...` in the slot directory. Remotion can be scaffolded with `npx create-video@latest` or installed inside the slot before rendering.
+- HyperFrames, Remotion, and Manim are optional animation engines; pick the engine per animation slot in `SKILL.md`. `setup.sh` pre-installs Remotion into the repo's `remotion/` template (it does not make Remotion the default). HyperFrames can run through `npx --yes hyperframes ...` in the slot directory.
 - Never run transcription as part of install verification unless the user explicitly asks — Scribe costs real money.
 - If the user is on Linux without a package manager Claude recognizes, print the manual `ffmpeg` install URL and wait rather than guessing.

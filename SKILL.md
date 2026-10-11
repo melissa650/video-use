@@ -63,8 +63,9 @@ First-time install lives in `install.md` (clone, deps, ffmpeg, skill registratio
 - `ffmpeg` + `ffprobe` on PATH.
 - Python deps installed (`uv sync` or `pip install -e .` inside the repo).
 - Node.js + npm available if the session needs HyperFrames or Remotion slots. HyperFrames currently requires Node.js 22+.
-- `yt-dlp`, HyperFrames, Remotion, Manim installed only on first use.
-- First-use animation setup happens inside the slot directory, never at the video-use repo root. HyperFrames can be invoked with `npx --yes hyperframes ...`; Remotion can be scaffolded with `npx create-video@latest` or installed as a project-local dependency before using its `remotion render` command.
+- `setup.sh --check` reports ffmpeg + Remotion status; `setup.sh` installs whatever is missing.
+- `yt-dlp`, HyperFrames, Manim installed only on first use.
+- Animation work happens inside the slot directory, never at the video-use repo root. HyperFrames can be invoked with `npx --yes hyperframes ...`; Remotion slots are created from the installed template with `helpers/remotion_slot.sh`.
 - This skill vendors `skills/manim-video/`. Read its SKILL.md when building a Manim slot.
 
 Helpers (`helpers/transcribe.py`, `helpers/render.py`, etc.) live alongside this SKILL.md. Resolve their paths relative to the directory containing this file — the skill is typically symlinked at `~/.claude/skills/video-use/` or `~/.codex/skills/video-use/`.
@@ -213,7 +214,7 @@ Pick the engine per animation slot. Do not default to Remotion just because the 
 
 For HyperFrames slots, scaffold the slot inside `edit/animations/slot_<id>/` with `npx --yes hyperframes init . --example blank --non-interactive --skip-skills`, build the HTML composition there, run the HyperFrames checks that fit the slot (`lint`, `validate`, and a draft render when practical), then produce the final overlay video with `npx --yes hyperframes render . -o render.mp4` or `--format webm -o render.webm` when alpha is required. Point the EDL overlay `file` at the actual rendered path.
 
-For Remotion slots, keep the Remotion project isolated inside the same slot directory, scaffold with `npx create-video@latest` or install Remotion locally there, render the composition to `render.mp4` with the project-local `remotion render` command, and verify duration and dimensions with `ffprobe`.
+For Remotion slots, run `helpers/remotion_slot.sh <edit>/animations/slot_<id>` — it copies the `remotion/` template (installed and browser-configured by `setup.sh`) into the slot with a shared `node_modules`. Edit `src/Overlay.tsx` and the `Composition` in `src/Root.tsx` (fps must match the edit), render with `npx remotion render Overlay render.mp4` inside the slot, and verify duration and dimensions with `ffprobe`. If the template isn't installed, run `setup.sh` first.
 
 None is mandatory. Invent hybrids if useful (e.g., PIL background with a HyperFrames or Remotion layer on top).
 
