@@ -6,13 +6,15 @@ export const FPS = 30;
 export const WIDTH = 1080;
 export const HEIGHT = 1920;
 
-/** Color de acento único (naranja del rodillo). */
-export const ACCENT = '#FF5A1F';
-export const WHITE = '#FFFFFF';
-export const BLACK = '#0A0A0A';
+/** Paleta tierra: acento caramelo + crema, arena y marrón. */
+export const ACCENT = '#C99A6E'; // caramelo (zonas, progreso, detalles)
+export const CREAM = '#F5EDE3'; // texto principal
+export const SAND = '#D9C4A8'; // texto secundario
+export const BROWN = '#2E2119'; // fondos de etiquetas
+export const BROWN_RGB = '46,33,25'; // BROWN en rgb, para transparencias
 
 /** Usuario o marca que aparece en el cierre. */
-export const USERNAME = '@usuario';
+export const USERNAME = '@glowithme.l';
 
 /** Zonas seguras de Reels/TikTok/Shorts (px). */
 export const SAFE = {top: 250, bottom: 350, right: 120, left: 60};

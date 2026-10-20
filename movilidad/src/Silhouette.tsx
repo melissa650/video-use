@@ -1,7 +1,7 @@
 import React from 'react';
 import {useCurrentFrame} from 'remotion';
-import {ACCENT, Zone} from './config';
-import {fontFamily} from './fonts';
+import {ACCENT, BROWN, CREAM, SAND, Zone} from './config';
+import {sansFamily} from './fonts';
 
 type Limb = [number, number, number, number, number]; // x1 y1 x2 y2 grosor
 
@@ -21,8 +21,8 @@ const LIMBS: Limb[] = [
 const TORSO = 'M64 70 Q100 62 136 70 L131 140 Q128 178 134 214 L66 214 Q72 178 69 140 Z';
 
 const Body: React.FC<{outline?: boolean}> = ({outline}) => {
-  const grow = outline ? 5 : 0;
-  const color = outline ? 'rgba(255,255,255,0.75)' : '#1c1c1c';
+  const grow = outline ? 4 : 0;
+  const color = outline ? CREAM : BROWN;
   return (
     <g>
       <circle cx={100} cy={34} r={20 + grow / 2} fill={color} />
@@ -97,7 +97,7 @@ export const Silhouette: React.FC<{zone: Zone; view: 'front' | 'back'; size?: nu
         <Body outline />
         <Body />
         {view === 'back' && (
-          <g stroke="rgba(255,255,255,0.35)" strokeWidth={2.5} fill="none" strokeLinecap="round">
+          <g stroke={SAND} strokeOpacity={0.45} strokeWidth={2.5} fill="none" strokeLinecap="round">
             <line x1={100} y1={76} x2={100} y2={190} />
             <path d="M74 206 Q87 216 100 206 Q113 216 126 206" />
           </g>
@@ -111,12 +111,12 @@ export const Silhouette: React.FC<{zone: Zone; view: 'front' | 'back'; size?: nu
       </svg>
       <div
         style={{
-          fontFamily,
-          fontWeight: 600,
-          fontSize: 22,
-          letterSpacing: 1.5,
+          fontFamily: sansFamily,
+          fontWeight: 500,
+          fontSize: 21,
+          letterSpacing: 3,
           textTransform: 'uppercase',
-          color: 'rgba(255,255,255,0.7)',
+          color: SAND,
         }}
       >
         {view === 'front' ? 'Vista frontal' : 'Vista posterior'}

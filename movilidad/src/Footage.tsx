@@ -9,7 +9,7 @@ import {
   staticFile,
   useCurrentFrame,
 } from 'remotion';
-import {Framing, HEIGHT, OUTRO_START, Segment, SEGMENTS, WIDTH} from './config';
+import {BROWN_RGB, Framing, HEIGHT, OUTRO_START, Segment, SEGMENTS, WIDTH} from './config';
 
 /** Punto de la pantalla donde se coloca el centro de la persona. */
 const OUT_CX = WIDTH / 2;
@@ -60,29 +60,31 @@ export const Footage: React.FC = () => {
   const frame = useCurrentFrame();
   let start = 0;
   // Oscurecido suave del cierre
-  const outroDim = interpolate(frame, [OUTRO_START, OUTRO_START + 18], [0, 0.62], {
+  const outroDim = interpolate(frame, [OUTRO_START, OUTRO_START + 18], [0, 0.7], {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
   });
   return (
     <AbsoluteFill style={{backgroundColor: 'black', overflow: 'hidden'}}>
-      {SEGMENTS.map((s) => {
-        const from = start;
-        start += s.duration;
-        return (
-          <Sequence key={s.id} from={from} durationInFrames={s.duration} name={s.id}>
-            <FramedSegment segment={s} />
-          </Sequence>
-        );
-      })}
+      {/* Tono cálido suave para casar con la paleta tierra */}
+      <AbsoluteFill style={{filter: 'sepia(0.14) saturate(0.95)'}}>
+        {SEGMENTS.map((s) => {
+          const from = start;
+          start += s.duration;
+          return (
+            <Sequence key={s.id} from={from} durationInFrames={s.duration} name={s.id}>
+              <FramedSegment segment={s} />
+            </Sequence>
+          );
+        })}
+      </AbsoluteFill>
       {/* Viñetas suaves arriba y abajo para que los textos se lean sin tapar a la persona */}
       <AbsoluteFill
         style={{
-          background:
-            'linear-gradient(180deg, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0) 34%, rgba(0,0,0,0) 72%, rgba(0,0,0,0.55) 100%)',
+          background: `linear-gradient(180deg, rgba(${BROWN_RGB},0.82) 0%, rgba(${BROWN_RGB},0.7) 20%, rgba(${BROWN_RGB},0) 38%, rgba(${BROWN_RGB},0) 70%, rgba(${BROWN_RGB},0.65) 100%)`,
         }}
       />
-      <AbsoluteFill style={{backgroundColor: `rgba(0,0,0,${outroDim})`}} />
+      <AbsoluteFill style={{backgroundColor: `rgba(${BROWN_RGB},${outroDim})`}} />
     </AbsoluteFill>
   );
 };

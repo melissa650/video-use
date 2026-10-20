@@ -3,7 +3,9 @@ import {AbsoluteFill, interpolate, spring, useCurrentFrame} from 'remotion';
 import {enterExit} from './anim';
 import {
   ACCENT,
-  BLACK,
+  BROWN,
+  BROWN_RGB,
+  CREAM,
   EXERCISES,
   Exercise,
   FPS,
@@ -12,15 +14,15 @@ import {
   OUTRO,
   OUTRO_START,
   SAFE,
+  SAND,
   SIDE_LABELS,
   TOTAL_FRAMES,
   USERNAME,
-  WHITE,
   WHY,
   WHY_RANGE,
   WIDTH,
 } from './config';
-import {fontFamily} from './fonts';
+import {sansFamily, serifFamily} from './fonts';
 import {BookmarkIcon, LooseIcon, RangeIcon, ReadyIcon} from './Icons';
 import {Silhouette} from './Silhouette';
 
@@ -29,59 +31,59 @@ const CONTENT_RIGHT = WIDTH - SAFE.right; // 960
 const TOP = SAFE.top + 30; // 280
 const TIP_BOTTOM = SAFE.bottom + 20; // 370 desde abajo
 
-const shadow = '0 4px 24px rgba(0,0,0,0.55)';
+const shadow = `0 3px 22px rgba(${BROWN_RGB},0.75)`;
+const panel = `rgba(${BROWN_RGB},0.72)`;
+
+/** Texto pequeño en mayúsculas espaciadas (sans). */
+const eyebrow: React.CSSProperties = {
+  fontFamily: sansFamily,
+  fontWeight: 500,
+  textTransform: 'uppercase',
+  color: SAND,
+  textShadow: shadow,
+};
 
 // ── 1 · Intro ───────────────────────────────────────────────
 const Intro: React.FC = () => {
   const frame = useCurrentFrame();
   const end = INTRO_RANGE.from + INTRO_RANGE.duration;
-  const title = enterExit(frame, INTRO_RANGE.from + 4, end, {distance: 60});
-  const sub = enterExit(frame, INTRO_RANGE.from + 14, end, {distance: 40});
-  const bar = spring({frame: frame - 10, fps: FPS, config: {damping: 200}});
+  const title = enterExit(frame, INTRO_RANGE.from + 4, end, {distance: 50});
+  const sub = enterExit(frame, INTRO_RANGE.from + 16, end, {distance: 30});
+  const line = spring({frame: frame - 12, fps: FPS, config: {damping: 200}});
+  const [first, ...rest] = INTRO.title.split('+');
   return (
     <div style={{position: 'absolute', left: CONTENT_LEFT, top: TOP + 10, width: 880}}>
       <div
         style={{
           opacity: title.opacity,
           transform: `translateY(${title.translate}px)`,
-          fontFamily,
-          fontWeight: 900,
-          fontSize: 92,
-          lineHeight: 1.02,
-          letterSpacing: -2,
-          color: WHITE,
+          fontFamily: serifFamily,
+          color: CREAM,
           textShadow: shadow,
         }}
       >
-        {INTRO.title.split('+').map((part, i) => (
-          <React.Fragment key={i}>
-            {i > 0 && <span style={{color: ACCENT}}>+</span>}
-            {part}
-          </React.Fragment>
-        ))}
+        <div style={{fontWeight: 600, fontSize: 104, lineHeight: 1, letterSpacing: -1}}>
+          {first.trim()}
+        </div>
+        {rest.length > 0 && (
+          <div style={{fontStyle: 'italic', fontWeight: 500, fontSize: 80, lineHeight: 1.05, marginTop: 8}}>
+            <span style={{color: ACCENT}}>+ </span>
+            {rest.join('+').trim()}
+          </div>
+        )}
       </div>
       <div
         style={{
-          marginTop: 26,
+          marginTop: 30,
           display: 'flex',
           alignItems: 'center',
-          gap: 18,
+          gap: 20,
           opacity: sub.opacity,
           transform: `translateY(${sub.translate}px)`,
         }}
       >
-        <div style={{width: 70 * bar, height: 8, borderRadius: 4, backgroundColor: ACCENT}} />
-        <div
-          style={{
-            fontFamily,
-            fontWeight: 700,
-            fontSize: 46,
-            color: WHITE,
-            textShadow: shadow,
-          }}
-        >
-          {INTRO.subtitle}
-        </div>
+        <div style={{width: 64 * line, height: 2, backgroundColor: ACCENT}} />
+        <div style={{...eyebrow, fontSize: 34, letterSpacing: 5}}>{INTRO.subtitle}</div>
       </div>
     </div>
   );
@@ -102,11 +104,11 @@ const Why: React.FC = () => {
         width: CONTENT_RIGHT - CONTENT_LEFT,
         display: 'flex',
         flexDirection: 'column',
-        gap: 26,
+        gap: 28,
       }}
     >
       {WHY.map((item, i) => {
-        const a = enterExit(frame, WHY_RANGE.from + i * 20, end, {distance: 70});
+        const a = enterExit(frame, WHY_RANGE.from + i * 20, end, {distance: 60});
         const Icon = ICONS[item.icon];
         return (
           <div
@@ -122,26 +124,26 @@ const Why: React.FC = () => {
             <div
               style={{
                 flex: '0 0 auto',
-                width: 76,
-                height: 76,
-                borderRadius: 38,
-                backgroundColor: ACCENT,
-                color: WHITE,
+                width: 74,
+                height: 74,
+                borderRadius: 37,
+                border: `2px solid ${ACCENT}`,
+                backgroundColor: panel,
+                color: ACCENT,
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                boxShadow: shadow,
               }}
             >
-              <Icon size={44} />
+              <Icon size={40} />
             </div>
             <div
               style={{
-                fontFamily,
-                fontWeight: 800,
-                fontSize: 48,
-                lineHeight: 1.1,
-                color: WHITE,
+                fontFamily: serifFamily,
+                fontWeight: 600,
+                fontSize: 50,
+                lineHeight: 1.12,
+                color: CREAM,
                 textShadow: shadow,
                 maxWidth: 780,
               }}
@@ -166,26 +168,28 @@ const SideIndicator: React.FC<{ex: Exercise}> = ({ex}) => {
     extrapolateRight: 'clamp',
   });
   const pill = (active: boolean, scale: number): React.CSSProperties => ({
-    padding: '8px 18px',
+    padding: '8px 20px',
     borderRadius: 30,
-    fontFamily,
-    fontWeight: 700,
-    fontSize: 30,
-    color: active ? WHITE : 'rgba(255,255,255,0.55)',
-    backgroundColor: active ? ACCENT : 'rgba(0,0,0,0.45)',
-    border: active ? 'none' : '2px solid rgba(255,255,255,0.25)',
+    fontFamily: sansFamily,
+    fontWeight: 500,
+    fontSize: 27,
+    letterSpacing: 2,
+    textTransform: 'uppercase',
+    color: active ? BROWN : 'rgba(245,237,227,0.6)',
+    backgroundColor: active ? ACCENT : panel,
+    border: active ? `1.5px solid ${ACCENT}` : '1.5px solid rgba(217,196,168,0.35)',
     transform: `scale(${scale})`,
   });
   return (
-    <div style={{display: 'flex', alignItems: 'center', gap: 12, marginTop: 18}}>
+    <div style={{display: 'flex', alignItems: 'center', gap: 12, marginTop: 20}}>
       <div style={pill(!switched, 1)}>{SIDE_LABELS.left}</div>
       <svg
-        width={34}
-        height={34}
+        width={32}
+        height={32}
         viewBox="0 0 40 40"
         fill="none"
-        stroke={switched ? ACCENT : 'rgba(255,255,255,0.6)'}
-        strokeWidth={4.5}
+        stroke={switched ? ACCENT : SAND}
+        strokeWidth={3}
         strokeLinecap="round"
         strokeLinejoin="round"
         style={{transform: `translateX(${arrow * 6}px)`}}
@@ -203,6 +207,7 @@ const ExerciseBlock: React.FC<{ex: Exercise; index: number}> = ({ex, index}) => 
   const label = enterExit(frame, ex.from, ex.to, {distance: 50});
   const fig = enterExit(frame, ex.from, ex.to, {distance: 30, delay: 5});
   const tip = enterExit(frame, ex.from, ex.to, {distance: 40, delay: 9});
+  const pad = (n: number) => String(n).padStart(2, '0');
   return (
     <AbsoluteFill>
       {/* Etiqueta: número y nombre */}
@@ -210,32 +215,23 @@ const ExerciseBlock: React.FC<{ex: Exercise; index: number}> = ({ex, index}) => 
         style={{
           position: 'absolute',
           left: CONTENT_LEFT,
-          top: TOP + 34,
+          top: TOP + 36,
           width: 640,
           opacity: label.opacity,
           transform: `translateX(${-label.translate}px)`,
         }}
       >
-        <div
-          style={{
-            fontFamily,
-            fontWeight: 800,
-            fontSize: 34,
-            color: ACCENT,
-            letterSpacing: 2,
-            textShadow: shadow,
-          }}
-        >
-          {index + 1}/{EXERCISES.length}
+        <div style={{...eyebrow, fontSize: 30, letterSpacing: 6}}>
+          <span style={{color: ACCENT}}>{pad(index + 1)}</span> / {pad(EXERCISES.length)}
         </div>
         <div
           style={{
-            fontFamily,
-            fontWeight: 900,
-            fontSize: 68,
+            marginTop: 6,
+            fontFamily: serifFamily,
+            fontWeight: 600,
+            fontSize: 72,
             lineHeight: 1.04,
-            letterSpacing: -1.5,
-            color: WHITE,
+            color: CREAM,
             textShadow: shadow,
           }}
         >
@@ -254,7 +250,8 @@ const ExerciseBlock: React.FC<{ex: Exercise; index: number}> = ({ex, index}) => 
           transform: `translateY(${fig.translate}px)`,
           padding: '18px 22px 14px',
           borderRadius: 28,
-          backgroundColor: 'rgba(0,0,0,0.35)',
+          backgroundColor: `rgba(${BROWN_RGB},0.45)`,
+          border: '1px solid rgba(217,196,168,0.2)',
         }}
       >
         <Silhouette zone={ex.zone} view={ex.view} size={300} />
@@ -277,15 +274,17 @@ const ExerciseBlock: React.FC<{ex: Exercise; index: number}> = ({ex, index}) => 
           style={{
             display: 'flex',
             alignItems: 'center',
-            gap: 16,
-            padding: '18px 30px',
+            gap: 18,
+            padding: '18px 34px',
             borderRadius: 44,
-            backgroundColor: 'rgba(10,10,10,0.72)',
-            border: `2px solid rgba(255,255,255,0.12)`,
+            backgroundColor: panel,
+            border: '1px solid rgba(217,196,168,0.35)',
           }}
         >
-          <div style={{width: 16, height: 16, borderRadius: 8, backgroundColor: ACCENT}} />
-          <div style={{fontFamily, fontWeight: 700, fontSize: 42, color: WHITE}}>{ex.tip}</div>
+          <div style={{width: 12, height: 12, backgroundColor: ACCENT, transform: 'rotate(45deg)'}} />
+          <div style={{fontFamily: sansFamily, fontWeight: 500, fontSize: 40, letterSpacing: 0.5, color: CREAM}}>
+            {ex.tip}
+          </div>
         </div>
       </div>
     </AbsoluteFill>
@@ -320,9 +319,9 @@ const Progress: React.FC = () => {
             key={i}
             style={{
               flex: 1,
-              height: 8,
-              borderRadius: 4,
-              backgroundColor: 'rgba(255,255,255,0.25)',
+              height: 5,
+              borderRadius: 3,
+              backgroundColor: 'rgba(245,237,227,0.22)',
               overflow: 'hidden',
             }}
           >
@@ -341,6 +340,7 @@ const Outro: React.FC = () => {
   const icon = enterExit(frame, OUTRO_START + 4, TOTAL_FRAMES + 30, {distance: 40});
   const cta = enterExit(frame, OUTRO_START + 8, TOTAL_FRAMES + 30, {distance: 50});
   const user = enterExit(frame, OUTRO_START + 18, TOTAL_FRAMES + 30, {distance: 30});
+  const line = spring({frame: frame - OUTRO_START - 14, fps: FPS, config: {damping: 200}});
   return (
     <AbsoluteFill
       style={{
@@ -353,11 +353,11 @@ const Outro: React.FC = () => {
     >
       <div
         style={{
-          width: 120,
-          height: 120,
-          borderRadius: 60,
-          backgroundColor: ACCENT,
-          color: WHITE,
+          width: 116,
+          height: 116,
+          borderRadius: 58,
+          border: `2px solid ${ACCENT}`,
+          color: ACCENT,
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
@@ -365,18 +365,18 @@ const Outro: React.FC = () => {
           transform: `translateY(${icon.translate}px) scale(${0.8 + 0.2 * icon.progress})`,
         }}
       >
-        <BookmarkIcon size={64} />
+        <BookmarkIcon size={56} />
       </div>
       <div
         style={{
           marginTop: 40,
           textAlign: 'center',
-          fontFamily,
-          fontWeight: 900,
-          fontSize: 84,
-          lineHeight: 1.05,
-          letterSpacing: -1.5,
-          color: WHITE,
+          fontFamily: serifFamily,
+          fontStyle: 'italic',
+          fontWeight: 500,
+          fontSize: 86,
+          lineHeight: 1.08,
+          color: CREAM,
           textShadow: shadow,
           opacity: cta.opacity,
           transform: `translateY(${cta.translate}px)`,
@@ -384,16 +384,15 @@ const Outro: React.FC = () => {
       >
         {OUTRO.cta}
       </div>
+      <div style={{marginTop: 40, width: 120 * line, height: 2, backgroundColor: ACCENT}} />
       <div
         style={{
-          marginTop: 44,
-          padding: '14px 34px',
-          borderRadius: 40,
-          backgroundColor: WHITE,
-          color: BLACK,
-          fontFamily,
-          fontWeight: 800,
-          fontSize: 44,
+          ...eyebrow,
+          marginTop: 36,
+          fontSize: 48,
+          letterSpacing: 3,
+          textTransform: 'none',
+          color: CREAM,
           opacity: user.opacity,
           transform: `translateY(${user.translate}px)`,
         }}
