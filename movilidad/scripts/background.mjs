@@ -1,5 +1,5 @@
 // Genera out/work/bg.mp4: la imagen del reel sin gráficos, directamente desde el original.
-// Un solo paso de ffmpeg por fotograma: HDR (HLG) → SDR BT.709 con mapeo de tonos, reencuadre
+// Un solo paso de ffmpeg por fotograma: HDR (HLG, 10 bits) → SDR BT.709 con mapeo de tonos, reencuadre
 // con un único reescalado lanczos y enfoque suave. Los encuadres salen de src/config.ts.
 import {spawnSync} from 'node:child_process';
 import fs from 'node:fs';
@@ -8,18 +8,18 @@ import {
   FREEZE_SOURCE_FRAME,
   HEIGHT,
   SEGMENTS,
+  SOURCE_FILE,
   TOTAL_FRAMES,
   WIDTH,
 } from '../src/config.ts';
 
-const SOURCE = 'public/movilidad_comprimido.mp4';
 const OUT = 'out/work/bg.mp4';
 /** Altura en pantalla del centro de la persona (igual que OUT_CY en src/Footage.tsx). */
 const OUT_CY = 1040;
 
 const TONEMAP =
   'zscale=t=linear:npl=100,format=gbrpf32le,zscale=p=bt709,' +
-  'tonemap=mobius:param=0.3:desat=0,zscale=t=bt709:m=bt709:r=tv,format=yuv420p';
+  'tonemap=mobius:param=0.3:desat=0,zscale=t=bt709:m=bt709:r=tv:d=error_diffusion,format=yuv420p';
 
 // Interpolación suave (seno) entre el encuadre inicial y el final del tramo, en función de t
 const ease = (a, b, dur) =>
@@ -30,10 +30,13 @@ const chains = SEGMENTS.map((s, i) => {
   const z = ease(s.from.z, s.to.z, dur);
   const cx = ease(s.from.cx, s.to.cx, dur);
   const cy = ease(s.from.cy, s.to.cy, dur);
+  // El original tiene fotograma variable (~60 fps): se recorta por tiempo y se pasa a 30 fps al final,
+  // así las partes ralentizadas usan fotogramas reales en vez de duplicados.
+  const sec = (f) => (f / FPS).toFixed(4);
   const take =
     s.id === 'outro'
-      ? `trim=start_frame=${FREEZE_SOURCE_FRAME}:end_frame=${FREEZE_SOURCE_FRAME + 1},setpts=PTS-STARTPTS`
-      : `trim=start_frame=${s.trimBefore}:end_frame=${s.trimBefore + Math.ceil(s.duration * s.playbackRate) + 1},` +
+      ? `trim=start=${sec(FREEZE_SOURCE_FRAME)}:end=${sec(FREEZE_SOURCE_FRAME + 1)},setpts=PTS-STARTPTS,fps=${FPS},trim=end_frame=1`
+      : `trim=start=${sec(s.trimBefore)}:end=${sec(s.trimBefore + s.duration * s.playbackRate + 2)},` +
         `setpts=(PTS-STARTPTS)/${s.playbackRate},fps=${FPS}`;
   return (
     `[s${i}]${take},tpad=stop_mode=clone:stop=${s.duration},trim=end_frame=${s.duration},setpts=PTS-STARTPTS,` +
@@ -53,7 +56,7 @@ const graph = [
 fs.mkdirSync('out/work', {recursive: true});
 fs.writeFileSync('out/work/bg_filter.txt', graph);
 const args = [
-  '-v', 'error', '-y', '-i', SOURCE,
+  '-v', 'error', '-y', '-i', SOURCE_FILE,
   '-filter_complex_script', 'out/work/bg_filter.txt', '-map', '[out]',
   '-c:v', 'libx264', '-crf', '8', '-preset', 'medium', '-pix_fmt', 'yuv420p',
   '-color_primaries', 'bt709', '-color_trc', 'bt709', '-colorspace', 'bt709', '-color_range', 'tv',

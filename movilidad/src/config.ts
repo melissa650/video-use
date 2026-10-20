@@ -37,11 +37,15 @@ export const OUTRO = {
 };
 
 // ── Material de origen ──────────────────────────────────────
-// hq.mp4         = original HDR convertido a SDR (color original) y escalado ×1,5 (scripts/prepare.sh)
-// last_frame.png = fotograma 1052 de hq.mp4 (último de aductores)
+// public/movilidad_original.mov = original del iPhone (HEVC 10 bits, HDR HLG, ~60 fps variables).
+// Todos los tiempos de origen se expresan en fotogramas a 30 fps (fotograma / 30 = segundos).
+// hq.mp4         = original → SDR a 30 fps, escalado ×1,5 (solo para la vista previa de Remotion Studio)
+// last_frame.png = fotograma congelado del cierre (vista previa)
 
-/** Fotograma del original que se congela en el cierre (último de aductores). */
-export const FREEZE_SOURCE_FRAME = 1052;
+/** Fichero original del que sale el render final (scripts/background.mjs, render_cover.mjs). */
+export const SOURCE_FILE = 'public/movilidad_original.mov';
+/** Fotograma (a 30 fps) del original que se congela en el cierre (0:33,80, último de aductores). */
+export const FREEZE_SOURCE_FRAME = 1014;
 
 /** Escala de hq.mp4 respecto al original 1080×1920. Los encuadres se dan en px del original. */
 export const SOURCE_SCALE = 1.5;
@@ -95,8 +99,8 @@ export const SEGMENTS: Segment[] = [
   seg('ex3b', 'hq.mp4', 539, 118, 1, {cx: 385, cy: 1100, z: 1.33}, {cx: 385, cy: 1090, z: 1.28}),
   // 3 · Cuádriceps (0:22,47–0:30,60), velocidad real
   seg('ex4', 'hq.mp4', 674, 244, 1, {cx: 590, cy: 1140, z: 1.34}, {cx: 595, cy: 1150, z: 1.4}),
-  // 4 · Aductores (0:31,00–0:35,10), ligeramente ralentizado 0,8×
-  seg('ex5', 'hq.mp4', 930, 123, 0.8, {cx: 605, cy: 1150, z: 1.42}, {cx: 605, cy: 1150, z: 1.48}),
+  // 4 · Aductores (0:31,00–0:33,80, fin del original), ralentizado 0,7× con fotogramas reales de 60 fps
+  seg('ex5', 'hq.mp4', 930, 84, 0.7, {cx: 605, cy: 1150, z: 1.42}, {cx: 605, cy: 1150, z: 1.48}),
   // Cierre: congelado del último fotograma
   seg('outro', 'last_frame.png', 0, 120, 1, {cx: 605, cy: 1150, z: 1.48}, {cx: 605, cy: 1150, z: 1.5}),
 ];

@@ -2,9 +2,9 @@
 // lanczos) + titular de Remotion sobre transparente. Salida: out/portada.png y out/portada_sin_texto.png
 import {spawnSync} from 'node:child_process';
 import fs from 'node:fs';
-import {HEIGHT, WIDTH} from '../src/config.ts';
+import {FPS, HEIGHT, SOURCE_FILE, WIDTH} from '../src/config.ts';
 
-const COVER_SOURCE_FRAME = 372; // 0:12,40, media zancada erguida
+const COVER_SOURCE_FRAME = 372; // a 30 fps = 0:12,40, media zancada erguida
 const {cx, cy, z} = {cx: 718, cy: 985, z: 1.75}; // = COVER_FRAMING en src/Cover.tsx
 const OUT_CY = 1170; // = COVER_OUT_CY en src/Cover.tsx
 
@@ -19,11 +19,11 @@ const x = Math.round(Math.min(Math.max(cx * z - WIDTH / 2, 0), w - WIDTH));
 const y = Math.round(Math.min(Math.max(cy * z - OUT_CY, 0), h - HEIGHT));
 fs.mkdirSync('out/work', {recursive: true});
 run('ffmpeg', [
-  '-v', 'error', '-y', '-i', 'public/movilidad_comprimido.mp4',
+  '-v', 'error', '-y', '-i', SOURCE_FILE,
   '-vf',
-  `select=eq(n\\,${COVER_SOURCE_FRAME}),` +
+  `trim=start=${(COVER_SOURCE_FRAME / FPS).toFixed(4)},setpts=PTS-STARTPTS,` +
     'zscale=t=linear:npl=100,format=gbrpf32le,zscale=p=bt709,tonemap=mobius:param=0.3:desat=0,' +
-    `zscale=t=bt709:m=bt709:r=tv,format=yuv444p,scale=${w}:${h}:flags=lanczos+accurate_rnd+full_chroma_int,` +
+    `zscale=t=bt709:m=bt709:r=tv:d=error_diffusion,format=yuv444p,scale=${w}:${h}:flags=lanczos+accurate_rnd+full_chroma_int,` +
     `crop=${WIDTH}:${HEIGHT}:${x}:${y},unsharp=5:5:0.55:3:3:0,scale=in_color_matrix=bt709,format=rgb24`,
   '-frames:v', '1', 'out/portada_sin_texto.png',
 ]);
