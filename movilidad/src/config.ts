@@ -40,6 +40,9 @@ export const OUTRO = {
 // hq.mp4         = original HDR convertido a SDR (color original) y escalado ×1,5 (scripts/prepare.sh)
 // last_frame.png = fotograma 1052 de hq.mp4 (último de aductores)
 
+/** Fotograma del original que se congela en el cierre (último de aductores). */
+export const FREEZE_SOURCE_FRAME = 1052;
+
 /** Escala de hq.mp4 respecto al original 1080×1920. Los encuadres se dan en px del original. */
 export const SOURCE_SCALE = 1.5;
 

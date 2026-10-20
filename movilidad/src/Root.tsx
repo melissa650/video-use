@@ -13,6 +13,7 @@ export const RemotionRoot: React.FC = () => (
       fps={FPS}
       width={WIDTH}
       height={HEIGHT}
+      defaultProps={{withFootage: true}}
     />
     <Still id="Portada" component={Cover} width={WIDTH} height={HEIGHT} defaultProps={{withText: true}} />
   </>

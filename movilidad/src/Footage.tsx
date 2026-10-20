@@ -40,8 +40,7 @@ const FramedSegment: React.FC<{segment: Segment}> = ({segment}) => {
     extrapolateRight: 'clamp',
     easing: Easing.inOut(Easing.sin),
   });
-  const mix = (k: keyof Framing) =>
-    segment.from[k] + (segment.to[k] - segment.from[k]) * t;
+  const mix = (k: keyof Framing) => segment.from[k] + (segment.to[k] - segment.from[k]) * t;
   const framing = {cx: mix('cx'), cy: mix('cy'), z: mix('z')};
 
   const style: React.CSSProperties = {
@@ -66,7 +65,11 @@ const FramedSegment: React.FC<{segment: Segment}> = ({segment}) => {
   );
 };
 
-export const Footage: React.FC = () => {
+/**
+ * Imagen + viñetas + oscurecido del cierre. Con showVideo=false solo dibuja las capas
+ * semitransparentes (para el render de gráficos que luego se compone sobre el fondo de ffmpeg).
+ */
+export const Footage: React.FC<{showVideo?: boolean}> = ({showVideo = true}) => {
   const frame = useCurrentFrame();
   let start = 0;
   // Oscurecido suave del cierre
@@ -75,18 +78,24 @@ export const Footage: React.FC = () => {
     extrapolateRight: 'clamp',
   });
   return (
-    <AbsoluteFill style={{backgroundColor: 'black', overflow: 'hidden'}}>
+    <AbsoluteFill
+      style={{
+        backgroundColor: showVideo ? 'black' : undefined,
+        overflow: 'hidden',
+      }}
+    >
       {/* Color original: sin filtros sobre la imagen */}
       <AbsoluteFill>
-        {SEGMENTS.map((s) => {
-          const from = start;
-          start += s.duration;
-          return (
-            <Sequence key={s.id} from={from} durationInFrames={s.duration} name={s.id}>
-              <FramedSegment segment={s} />
-            </Sequence>
-          );
-        })}
+        {showVideo &&
+          SEGMENTS.map((s) => {
+            const from = start;
+            start += s.duration;
+            return (
+              <Sequence key={s.id} from={from} durationInFrames={s.duration} name={s.id}>
+                <FramedSegment segment={s} />
+              </Sequence>
+            );
+          })}
       </AbsoluteFill>
       {/* Viñetas suaves arriba y abajo para que los textos se lean sin tapar a la persona */}
       <AbsoluteFill

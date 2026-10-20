@@ -26,11 +26,16 @@ const musicVolume = (f: number) => {
   return fade * level;
 };
 
-export const Movilidad: React.FC = () => {
+export type MovilidadProps = {
+  /** false = solo gráficos sobre fondo transparente (los compone scripts/render_final.sh). */
+  withFootage: boolean;
+};
+
+export const Movilidad: React.FC<MovilidadProps> = ({withFootage}) => {
   const music = hasStatic(MUSIC_FILE);
   return (
-    <AbsoluteFill style={{backgroundColor: 'black'}}>
-      <Footage />
+    <AbsoluteFill style={{backgroundColor: withFootage ? 'black' : undefined}}>
+      <Footage showVideo={withFootage} />
       <Overlays />
       {music && <Audio src={staticFile(MUSIC_FILE)} volume={musicVolume} />}
       {/* <Sequence from={VOICE_START}><Audio src={staticFile(VOICE_FILE)} volume={1} /></Sequence> */}
