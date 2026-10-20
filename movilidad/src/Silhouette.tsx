@@ -1,6 +1,6 @@
 import React from 'react';
 import {useCurrentFrame} from 'remotion';
-import {ACCENT, BROWN, CREAM, SAND, Zone} from './config';
+import {ACCENT, DARK, CREAM, SAND, Zone} from './config';
 import {sansFamily} from './fonts';
 
 type Limb = [number, number, number, number, number]; // x1 y1 x2 y2 grosor
@@ -22,7 +22,7 @@ const TORSO = 'M64 70 Q100 62 136 70 L131 140 Q128 178 134 214 L66 214 Q72 178 6
 
 const Body: React.FC<{outline?: boolean}> = ({outline}) => {
   const grow = outline ? 4 : 0;
-  const color = outline ? CREAM : BROWN;
+  const color = outline ? CREAM : DARK;
   return (
     <g>
       <circle cx={100} cy={34} r={20 + grow / 2} fill={color} />

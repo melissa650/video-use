@@ -3,9 +3,10 @@ import {AbsoluteFill, interpolate, spring, useCurrentFrame} from 'remotion';
 import {enterExit} from './anim';
 import {
   ACCENT,
-  BROWN,
-  BROWN_RGB,
+  DARK,
+  DARK_RGB,
   CREAM,
+  CREAM_RGB,
   EXERCISES,
   Exercise,
   FPS,
@@ -15,6 +16,7 @@ import {
   OUTRO_START,
   SAFE,
   SAND,
+  SAND_RGB,
   SIDE_LABELS,
   TOTAL_FRAMES,
   USERNAME,
@@ -32,8 +34,8 @@ const CONTENT_RIGHT = WIDTH - SAFE.right; // 960
 const TOP = SAFE.top + 30; // 280
 const TIP_BOTTOM = SAFE.bottom + 20; // 370 desde abajo
 
-const shadow = `0 3px 22px rgba(${BROWN_RGB},0.75)`;
-const panel = `rgba(${BROWN_RGB},0.72)`;
+const shadow = `0 3px 22px rgba(${DARK_RGB},0.75)`;
+const panel = `rgba(${DARK_RGB},0.72)`;
 
 /** Texto pequeño en mayúsculas espaciadas (sans). */
 const eyebrow: React.CSSProperties = {
@@ -176,9 +178,9 @@ const SideIndicator: React.FC<{ex: Exercise}> = ({ex}) => {
     fontSize: 27,
     letterSpacing: 2,
     textTransform: 'uppercase',
-    color: active ? BROWN : 'rgba(245,237,227,0.6)',
+    color: active ? DARK : `rgba(${CREAM_RGB},0.6)`,
     backgroundColor: active ? ACCENT : panel,
-    border: active ? `1.5px solid ${ACCENT}` : '1.5px solid rgba(217,196,168,0.35)',
+    border: active ? `1.5px solid ${ACCENT}` : `1.5px solid rgba(${SAND_RGB},0.35)`,
     transform: `scale(${scale})`,
   });
   return (
@@ -251,8 +253,8 @@ const ExerciseBlock: React.FC<{ex: Exercise; index: number}> = ({ex, index}) => 
           transform: `translateY(${fig.translate}px)`,
           padding: '18px 22px 14px',
           borderRadius: 28,
-          backgroundColor: `rgba(${BROWN_RGB},0.45)`,
-          border: '1px solid rgba(217,196,168,0.2)',
+          backgroundColor: `rgba(${DARK_RGB},0.45)`,
+          border: `1px solid rgba(${SAND_RGB},0.2)`,
         }}
       >
         <Silhouette zone={ex.zone} view={ex.view} size={300} />
@@ -279,7 +281,7 @@ const ExerciseBlock: React.FC<{ex: Exercise; index: number}> = ({ex, index}) => 
             padding: '18px 34px',
             borderRadius: 44,
             backgroundColor: panel,
-            border: '1px solid rgba(217,196,168,0.35)',
+            border: `1px solid rgba(${SAND_RGB},0.35)`,
           }}
         >
           <div style={{width: 12, height: 12, backgroundColor: ACCENT, transform: 'rotate(45deg)'}} />
@@ -322,7 +324,7 @@ const Progress: React.FC = () => {
               flex: 1,
               height: 5,
               borderRadius: 3,
-              backgroundColor: 'rgba(245,237,227,0.22)',
+              backgroundColor: `rgba(${CREAM_RGB},0.22)`,
               overflow: 'hidden',
             }}
           >

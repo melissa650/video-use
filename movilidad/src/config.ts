@@ -6,12 +6,14 @@ export const FPS = 30;
 export const WIDTH = 1080;
 export const HEIGHT = 1920;
 
-/** Paleta tierra: acento caramelo + crema, arena y marrón. */
-export const ACCENT = '#C99A6E'; // caramelo (zonas, progreso, detalles)
-export const CREAM = '#F5EDE3'; // texto principal
-export const SAND = '#D9C4A8'; // texto secundario
-export const BROWN = '#2E2119'; // fondos de etiquetas
-export const BROWN_RGB = '46,33,25'; // BROWN en rgb, para transparencias
+/** Paleta amarillo pastel: acento mantequilla + marfil sobre fondos oscuros neutros. */
+export const ACCENT = '#F5DF8E'; // amarillo pastel (zonas, progreso, detalles)
+export const CREAM = '#FFFBEE'; // texto principal (marfil)
+export const CREAM_RGB = '255,251,238';
+export const SAND = '#F3E7BC'; // texto secundario (amarillo muy claro)
+export const SAND_RGB = '243,231,188';
+export const DARK = '#1D1B16'; // fondos de etiquetas
+export const DARK_RGB = '29,27,22'; // DARK en rgb, para transparencias
 
 /** Usuario o marca que aparece en el cierre. */
 export const USERNAME = '@glowithme.l';

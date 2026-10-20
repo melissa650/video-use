@@ -10,7 +10,7 @@ import {
   useCurrentFrame,
 } from 'remotion';
 import {
-  BROWN_RGB,
+  DARK_RGB,
   Framing,
   HEIGHT,
   OUTRO_START,
@@ -27,9 +27,9 @@ const OUT_CY = 1040;
 const clamp = (v: number, min: number, max: number) => Math.min(max, Math.max(min, v));
 
 /** Reencuadre: zoom alrededor de la persona sin dejar bordes vacíos. */
-const transformFor = ({cx, cy, z}: Framing) => {
+export const transformFor = ({cx, cy, z}: Framing, outCy = OUT_CY) => {
   const tx = clamp(OUT_CX - cx * z, WIDTH - WIDTH * z, 0);
-  const ty = clamp(OUT_CY - cy * z, HEIGHT - HEIGHT * z, 0);
+  const ty = clamp(outCy - cy * z, HEIGHT - HEIGHT * z, 0);
   // El archivo de origen está escalado ×SOURCE_SCALE: el navegador solo reduce, nunca amplía.
   return `translate(${tx}px, ${ty}px) scale(${z / SOURCE_SCALE})`;
 };
@@ -96,7 +96,7 @@ export const Footage: React.FC = () => {
             'linear-gradient(180deg, rgba(0,0,0,0.78) 0%, rgba(0,0,0,0.62) 20%, rgba(0,0,0,0) 36%, rgba(0,0,0,0) 72%, rgba(0,0,0,0.6) 100%)',
         }}
       />
-      <AbsoluteFill style={{backgroundColor: `rgba(${BROWN_RGB},${outroDim})`}} />
+      <AbsoluteFill style={{backgroundColor: `rgba(${DARK_RGB},${outroDim})`}} />
     </AbsoluteFill>
   );
 };

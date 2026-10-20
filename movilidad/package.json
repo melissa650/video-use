@@ -6,7 +6,8 @@
     "dev": "remotion studio",
     "render": "remotion render Movilidad out/movilidad_final.mp4",
     "previews": "node scripts/previews.mjs",
-    "prepare-media": "bash scripts/prepare.sh"
+    "prepare-media": "bash scripts/prepare.sh",
+    "cover": "remotion still Portada out/portada.png && remotion still Portada out/portada_sin_texto.png --props='{\"withText\":false}'"
   },
   "dependencies": {
     "@remotion/bundler": "^4.0.537",

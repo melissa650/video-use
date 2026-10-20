@@ -13,3 +13,5 @@ ffmpeg -v error -y -i movilidad_comprimido.mp4 \
   -c:v libx264 -crf 12 -preset slow -g 10 -pix_fmt yuv420p \
   -color_primaries bt709 -color_trc bt709 -colorspace bt709 -color_range tv -an hq.mp4
 ffmpeg -v error -y -i hq.mp4 -vf "select=eq(n\,1052)" -frames:v 1 last_frame.png
+# Fotograma de la portada (0:12,40, media zancada erguida)
+ffmpeg -v error -y -i hq.mp4 -vf "select=eq(n\,372)" -frames:v 1 cover_frame.png

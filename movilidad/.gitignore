@@ -5,3 +5,6 @@ out/*
 # Intermedios regenerables con scripts/prepare.sh
 public/hq.mp4
 public/last_frame.png
+public/cover_frame.png
+!out/portada.png
+!out/portada_sin_texto.png
