@@ -12,7 +12,7 @@ const FRAMES = {
   '05_ej2_isquios_lado_izq': 450,
   '06_ej2_isquios_lado_dcho': 560,
   '07_ej3_cuadriceps': 740,
-  '08_ej4_aductores': 950,
+  '08_ej4_abductores': 950,
   '09_cierre': 1100,
 };
 const only = process.argv.slice(2);

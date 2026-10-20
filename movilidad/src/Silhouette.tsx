@@ -54,7 +54,8 @@ const Mirror: React.FC<{children: React.ReactNode}> = ({children}) => (
 const ZoneShape: React.FC<{zone: Zone}> = ({zone}) => {
   const s = {stroke: ACCENT, strokeLinecap: 'round' as const, fill: 'none'};
   switch (zone) {
-    case 'hipLateral':
+    case 'abductors':
+      // Cara externa: cadera (glúteo medio / tensor) y lateral del muslo
       return (
         <Mirror>
           <ellipse cx={70} cy={204} rx={7} ry={13} fill={ACCENT} />
@@ -73,12 +74,6 @@ const ZoneShape: React.FC<{zone: Zone}> = ({zone}) => {
       return (
         <Mirror>
           <line x1={85} y1={218} x2={81.6} y2={290} strokeWidth={19} {...s} />
-        </Mirror>
-      );
-    case 'adductors':
-      return (
-        <Mirror>
-          <line x1={95} y1={214} x2={90} y2={286} strokeWidth={8} {...s} />
         </Mirror>
       );
   }

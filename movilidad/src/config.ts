@@ -44,7 +44,7 @@ export const OUTRO = {
 
 /** Fichero original del que sale el render final (scripts/background.mjs, render_cover.mjs). */
 export const SOURCE_FILE = 'public/movilidad_original.mov';
-/** Fotograma (a 30 fps) del original que se congela en el cierre (0:33,80, último de aductores). */
+/** Fotograma (a 30 fps) del original que se congela en el cierre (0:33,80, último de abductores). */
 export const FREEZE_SOURCE_FRAME = 1014;
 
 /** Escala de hq.mp4 respecto al original 1080×1920. Los encuadres se dan en px del original. */
@@ -99,7 +99,7 @@ export const SEGMENTS: Segment[] = [
   seg('ex3b', 'hq.mp4', 539, 118, 1, {cx: 385, cy: 1100, z: 1.33}, {cx: 385, cy: 1090, z: 1.28}),
   // 3 · Cuádriceps (0:22,47–0:30,60), velocidad real
   seg('ex4', 'hq.mp4', 674, 244, 1, {cx: 590, cy: 1140, z: 1.34}, {cx: 595, cy: 1150, z: 1.4}),
-  // 4 · Aductores (0:31,00–0:33,80, fin del original), ralentizado 0,7× con fotogramas reales de 60 fps
+  // 4 · Abductores (0:31,00–0:33,80, fin del original), ralentizado 0,7× con fotogramas reales de 60 fps
   seg('ex5', 'hq.mp4', 930, 84, 0.7, {cx: 605, cy: 1150, z: 1.42}, {cx: 605, cy: 1150, z: 1.48}),
   // Cierre: congelado del último fotograma
   seg('outro', 'last_frame.png', 0, 120, 1, {cx: 605, cy: 1150, z: 1.48}, {cx: 605, cy: 1150, z: 1.5}),
@@ -125,7 +125,7 @@ export const WHY_RANGE = {from: 72, duration: segEnd('intro') - 72}; // 2,4–5,
 export const WHY_STAGGER = 12;
 export const OUTRO_START = segStart('outro');
 
-export type Zone = 'hipLateral' | 'hipFlexorsAnkle' | 'hamstrings' | 'quads' | 'adductors';
+export type Zone = 'hipFlexorsAnkle' | 'hamstrings' | 'quads' | 'abductors';
 
 export type Exercise = {
   name: string;
@@ -166,8 +166,8 @@ export const EXERCISES: Exercise[] = [
     to: segEnd('ex4'),
   },
   {
-    name: 'Aductores',
-    zone: 'adductors',
+    name: 'Abductores',
+    zone: 'abductors',
     view: 'front',
     tip: 'Haz pausa donde notes más tensión',
     from: segStart('ex5'),
