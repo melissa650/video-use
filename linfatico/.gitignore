@@ -1,0 +1,8 @@
+node_modules
+out/*
+!out/linfatico_final.mp4
+!out/previews/
+!out/portada.png
+!out/portada_sin_texto.png
+# Vista previa de Studio (scripts/prepare.sh)
+public/preview/
