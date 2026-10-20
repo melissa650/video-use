@@ -45,6 +45,13 @@ export type ClipId = keyof typeof CLIPS;
 /** Mapeo HDR → SDR. 203 nits = blanco de referencia HLG: natural en exteriores con sol. */
 export const TONEMAP_NPL = 203;
 
+/**
+ * Retoque de piel (piernas, brazos, cara): borra manchas y bultitos pequeños y conserva la textura
+ * fina. Solo actúa sobre tonos de piel dentro de ±halfWidth px del centro del encuadre de cada tramo.
+ * radius = tamaño máximo de las imperfecciones que borra; strength = 0–255 (mezcla con el original).
+ */
+export const RETOUCH = {enabled: true, radius: 9, strength: 215, halfWidth: 320};
+
 export type Framing = {
   /** Centro del encuadre en coordenadas del clip vertical 1080×1920 (px). */
   cx: number;
