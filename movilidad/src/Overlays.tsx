@@ -20,6 +20,7 @@ import {
   USERNAME,
   WHY,
   WHY_RANGE,
+  WHY_STAGGER,
   WIDTH,
 } from './config';
 import {sansFamily, serifFamily} from './fonts';
@@ -108,7 +109,7 @@ const Why: React.FC = () => {
       }}
     >
       {WHY.map((item, i) => {
-        const a = enterExit(frame, WHY_RANGE.from + i * 20, end, {distance: 60});
+        const a = enterExit(frame, WHY_RANGE.from + i * WHY_STAGGER, end, {distance: 60});
         const Icon = ICONS[item.icon];
         return (
           <div

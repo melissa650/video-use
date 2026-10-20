@@ -9,7 +9,16 @@ import {
   staticFile,
   useCurrentFrame,
 } from 'remotion';
-import {BROWN_RGB, Framing, HEIGHT, OUTRO_START, Segment, SEGMENTS, WIDTH} from './config';
+import {
+  BROWN_RGB,
+  Framing,
+  HEIGHT,
+  OUTRO_START,
+  Segment,
+  SEGMENTS,
+  SOURCE_SCALE,
+  WIDTH,
+} from './config';
 
 /** Punto de la pantalla donde se coloca el centro de la persona. */
 const OUT_CX = WIDTH / 2;
@@ -21,7 +30,8 @@ const clamp = (v: number, min: number, max: number) => Math.min(max, Math.max(mi
 const transformFor = ({cx, cy, z}: Framing) => {
   const tx = clamp(OUT_CX - cx * z, WIDTH - WIDTH * z, 0);
   const ty = clamp(OUT_CY - cy * z, HEIGHT - HEIGHT * z, 0);
-  return `translate(${tx}px, ${ty}px) scale(${z})`;
+  // El archivo de origen está escalado ×SOURCE_SCALE: el navegador solo reduce, nunca amplía.
+  return `translate(${tx}px, ${ty}px) scale(${z / SOURCE_SCALE})`;
 };
 
 const FramedSegment: React.FC<{segment: Segment}> = ({segment}) => {
@@ -36,8 +46,8 @@ const FramedSegment: React.FC<{segment: Segment}> = ({segment}) => {
 
   const style: React.CSSProperties = {
     position: 'absolute',
-    width: WIDTH,
-    height: HEIGHT,
+    width: WIDTH * SOURCE_SCALE,
+    height: HEIGHT * SOURCE_SCALE,
     transformOrigin: '0 0',
     transform: transformFor(framing),
   };
@@ -66,8 +76,8 @@ export const Footage: React.FC = () => {
   });
   return (
     <AbsoluteFill style={{backgroundColor: 'black', overflow: 'hidden'}}>
-      {/* Tono cálido suave para casar con la paleta tierra */}
-      <AbsoluteFill style={{filter: 'sepia(0.14) saturate(0.95)'}}>
+      {/* Color original: sin filtros sobre la imagen */}
+      <AbsoluteFill>
         {SEGMENTS.map((s) => {
           const from = start;
           start += s.duration;
@@ -81,7 +91,9 @@ export const Footage: React.FC = () => {
       {/* Viñetas suaves arriba y abajo para que los textos se lean sin tapar a la persona */}
       <AbsoluteFill
         style={{
-          background: `linear-gradient(180deg, rgba(${BROWN_RGB},0.82) 0%, rgba(${BROWN_RGB},0.7) 20%, rgba(${BROWN_RGB},0) 38%, rgba(${BROWN_RGB},0) 70%, rgba(${BROWN_RGB},0.65) 100%)`,
+          // Neutro (negro) para no teñir la imagen; solo en las franjas de texto
+          background:
+            'linear-gradient(180deg, rgba(0,0,0,0.78) 0%, rgba(0,0,0,0.62) 20%, rgba(0,0,0,0) 36%, rgba(0,0,0,0) 72%, rgba(0,0,0,0.6) 100%)',
         }}
       />
       <AbsoluteFill style={{backgroundColor: `rgba(${BROWN_RGB},${outroDim})`}} />

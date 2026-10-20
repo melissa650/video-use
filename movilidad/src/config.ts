@@ -35,9 +35,11 @@ export const OUTRO = {
 };
 
 // ── Material de origen ──────────────────────────────────────
-// graded.mp4   = vídeo original con exposición/contraste corregidos (ffmpeg)
-// ex1_slow.mp4 = 0:00–0:03,50 corregido y ralentizado a 0,4× con interpolación (258 fotogramas)
-// last_frame.png = fotograma 1052 de graded.mp4 (último del ejercicio 5)
+// hq.mp4         = original HDR convertido a SDR (color original) y escalado ×1,5 (scripts/prepare.sh)
+// last_frame.png = fotograma 1052 de hq.mp4 (último de aductores)
+
+/** Escala de hq.mp4 respecto al original 1080×1920. Los encuadres se dan en px del original. */
+export const SOURCE_SCALE = 1.5;
 
 export type Framing = {
   /** Centro del encuadre en coordenadas del vídeo de origen (px). */
@@ -49,7 +51,7 @@ export type Framing = {
 
 export type Segment = {
   id: string;
-  src: 'graded.mp4' | 'ex1_slow.mp4' | 'last_frame.png';
+  src: 'hq.mp4' | 'last_frame.png';
   /** Primer fotograma usado del archivo de origen (a 30 fps). */
   trimBefore: number;
   /** Duración en el montaje final (fotogramas). */
@@ -78,20 +80,20 @@ const seg = (
 });
 
 export const SEGMENTS: Segment[] = [
-  // 1 · Cadera lateral (0:00–0:03,50 de origen, a cámara lenta 0,4×). Intro + «por qué» van encima.
-  seg('ex1', 'ex1_slow.mp4', 0, 258, 1, {cx: 600, cy: 1080, z: 1.2}, {cx: 640, cy: 1100, z: 1.34}),
-  // 2 · Media zancada, lado A (0:04,70–0:08,53) y lado B (0:09,20–0:12,93)
-  seg('ex2a', 'graded.mp4', 141, 115, 1, {cx: 585, cy: 1000, z: 1.38}, {cx: 595, cy: 1010, z: 1.44}),
-  seg('ex2b', 'graded.mp4', 276, 112, 1, {cx: 700, cy: 1010, z: 1.44}, {cx: 690, cy: 1000, z: 1.38}),
-  // 3 · Isquiotibiales, pierna A (0:13,47–0:17,40) y pierna B (0:17,97–0:21,90)
-  seg('ex3a', 'graded.mp4', 404, 118, 1, {cx: 660, cy: 1090, z: 1.28}, {cx: 660, cy: 1100, z: 1.33}),
-  seg('ex3b', 'graded.mp4', 539, 118, 1, {cx: 385, cy: 1100, z: 1.33}, {cx: 385, cy: 1090, z: 1.28}),
-  // 4 · Cuádriceps (0:22,47–0:30,60), acelerado 1,15×
-  seg('ex4', 'graded.mp4', 674, 244, 1.15, {cx: 590, cy: 1140, z: 1.34}, {cx: 595, cy: 1150, z: 1.4}),
-  // 5 · Aductores (0:31,00–0:35,10), ligeramente ralentizado 0,8×
-  seg('ex5', 'graded.mp4', 930, 123, 0.8, {cx: 605, cy: 1150, z: 1.45}, {cx: 605, cy: 1150, z: 1.52}),
+  // Intro (0:00–0:04,13 de origen, a 0,8×): titular + «por qué» encima, sin etiqueta de ejercicio
+  seg('intro', 'hq.mp4', 0, 124, 0.8, {cx: 600, cy: 1080, z: 1.15}, {cx: 630, cy: 1090, z: 1.32}),
+  // 1 · Media zancada, lado A (0:04,70–0:08,53) y lado B (0:09,20–0:12,93)
+  seg('ex2a', 'hq.mp4', 141, 115, 1, {cx: 585, cy: 1000, z: 1.38}, {cx: 595, cy: 1010, z: 1.44}),
+  seg('ex2b', 'hq.mp4', 276, 112, 1, {cx: 700, cy: 1010, z: 1.44}, {cx: 690, cy: 1000, z: 1.38}),
+  // 2 · Isquiotibiales, pierna A (0:13,47–0:17,40) y pierna B (0:17,97–0:21,90)
+  seg('ex3a', 'hq.mp4', 404, 118, 1, {cx: 660, cy: 1090, z: 1.28}, {cx: 660, cy: 1100, z: 1.33}),
+  seg('ex3b', 'hq.mp4', 539, 118, 1, {cx: 385, cy: 1100, z: 1.33}, {cx: 385, cy: 1090, z: 1.28}),
+  // 3 · Cuádriceps (0:22,47–0:30,60), velocidad real
+  seg('ex4', 'hq.mp4', 674, 244, 1, {cx: 590, cy: 1140, z: 1.34}, {cx: 595, cy: 1150, z: 1.4}),
+  // 4 · Aductores (0:31,00–0:35,10), ligeramente ralentizado 0,8×
+  seg('ex5', 'hq.mp4', 930, 123, 0.8, {cx: 605, cy: 1150, z: 1.42}, {cx: 605, cy: 1150, z: 1.48}),
   // Cierre: congelado del último fotograma
-  seg('outro', 'last_frame.png', 0, 120, 1, {cx: 605, cy: 1150, z: 1.52}, {cx: 605, cy: 1150, z: 1.58}),
+  seg('outro', 'last_frame.png', 0, 120, 1, {cx: 605, cy: 1150, z: 1.48}, {cx: 605, cy: 1150, z: 1.5}),
 ];
 
 export const segStart = (id: string) => {
@@ -108,8 +110,10 @@ const segEnd = (id: string) =>
 export const TOTAL_FRAMES = SEGMENTS.reduce((a, s) => a + s.duration, 0);
 
 // ── Bloques de texto ────────────────────────────────────────
-export const INTRO_RANGE = {from: 0, duration: 90}; // 0–3 s
-export const WHY_RANGE = {from: 90, duration: 96}; // 3–6,2 s
+export const INTRO_RANGE = {from: 0, duration: 72}; // 0–2,4 s
+export const WHY_RANGE = {from: 72, duration: segEnd('intro') - 72}; // 2,4–5,2 s
+/** Fotogramas entre la entrada de cada mensaje del «por qué». */
+export const WHY_STAGGER = 12;
 export const OUTRO_START = segStart('outro');
 
 export type Zone = 'hipLateral' | 'hipFlexorsAnkle' | 'hamstrings' | 'quads' | 'adductors';
@@ -127,14 +131,6 @@ export type Exercise = {
 
 export const EXERCISES: Exercise[] = [
   {
-    name: 'Cadera lateral',
-    zone: 'hipLateral',
-    view: 'front',
-    tip: '30–60 s por zona',
-    from: WHY_RANGE.from + WHY_RANGE.duration,
-    to: segEnd('ex1'),
-  },
-  {
     name: 'Flexores de cadera y tobillo',
     zone: 'hipFlexorsAnkle',
     view: 'front',
@@ -147,7 +143,7 @@ export const EXERCISES: Exercise[] = [
     name: 'Isquiotibiales',
     zone: 'hamstrings',
     view: 'back',
-    tip: 'Ambos lados',
+    tip: '30–60 s por zona',
     from: segStart('ex3a'),
     to: segEnd('ex3b'),
     sideSwitch: segStart('ex3b'),

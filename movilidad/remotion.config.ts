@@ -1,9 +1,10 @@
 import {Config} from '@remotion/cli/config';
 
-Config.setVideoImageFormat('jpeg');
-Config.setJpegQuality(95);
+// PNG sin pérdidas para cada fotograma (máxima calidad antes de codificar)
+Config.setVideoImageFormat('png');
 Config.setCodec('h264');
-Config.setCrf(16);
+Config.setCrf(14);
+Config.setX264Preset('slow');
 Config.setPixelFormat('yuv420p');
 Config.setOverwriteOutput(true);
 // Navegador propio opcional (p. ej. REMOTION_BROWSER=/ruta/headless_shell). Sin la variable,

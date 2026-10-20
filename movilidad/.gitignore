@@ -3,6 +3,5 @@ out/*
 !out/movilidad_final.mp4
 !out/previews/
 # Intermedios regenerables con scripts/prepare.sh
-public/graded.mp4
-public/ex1_slow.mp4
+public/hq.mp4
 public/last_frame.png
